@@ -31,18 +31,16 @@ inline std::ostream& operator<<(std::ostream& out, const point &p) {
 }
 
 //overload right binary shift
-inline std::istream& operator>>(std::istream& in, point *p) {
+inline std::istream& operator>>(std::istream& in, point &p) {
 	std::string str;
-	double x_coor, y_coor;
 	std::string::size_type comma, end;
+	double x_coor, y_coor;
 	in >> str;
-	comma = str.find(", ");
-	end = str.find(")");
+	comma = str.find(',');
+	end = str.find(')');
 	x_coor = std::stod(str.substr(1, comma - 1), 0);
-	std::cout << x_coor << '\n';
-	y_coor = std::stod(str.substr(comma + 2, end - comma - 2), 0);
-	std::cout << y_coor << '\n';
-	p = new point(x_coor, y_coor);
+	y_coor = std::stod(str.substr(comma + 1, end - comma - 1), 0);
+	p.set_point(x_coor, y_coor);
 	return in;
 }
 
@@ -59,9 +57,9 @@ int main(void) {
 	std::cout << "a = " << a << '\n' << "b = " << b << '\n';
 	point c((a + b).get_x(), (a + b).get_y());
 	std::cout << "c = a + b = " << c  << '\n';
-	point *d;
+	point d;
 	std::cin >> d;
-	std::cout << "d = " << *d << '\n';
+	std::cout << "d = " << d << '\n';
 
 	return 0;
 }
