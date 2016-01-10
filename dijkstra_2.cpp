@@ -37,9 +37,37 @@ void print_graph (bool **graph) {
 	}
 }
 
+bool is_connected(bool **graph) {
+	bool closed[graph_size], open[graph_size];
+	int closed_nodes = 0;
+	int old_closed_nodes = 0;
+	for (int i = 0; i < graph_size; i ++)
+		closed[i] = open[i] = false;
+	open[0] = true;
+
+	while (closed_nodes < graph_size) {
+		old_closed_nodes = closed_nodes;
+		//add node from open set to closed set
+		//fill open set with other nodes
+		for(int i = 0; i < graph_size; i ++) {
+			if ((open[i] == true) && (closed[i] == false)) {
+				closed[i] = true;
+				closed_nodes ++;
+				for (int j = 0; j < graph_size; j ++)
+					open[j] = open[j] || graph[i][j];
+			}
+		}
+		//when no nodes found in open set
+		if (old_closed_nodes == closed_nodes) break;
+	}
+	if (closed_nodes == graph_size) return true;
+	else if (old_closed_nodes == closed_nodes) return false;
+}
+
 int main(void) {
 	bool **graph = generate_graph();
 	print_graph(graph);
+	std::cout << is_connected(graph) << '\n';
 
 	return 0;
 }
