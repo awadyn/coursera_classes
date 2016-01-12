@@ -17,6 +17,9 @@ class list {
 	public:
 		list(): head(NULL), tail(NULL), cursor(NULL) {};
 		list(list_element *head, list_element *tail, list_element *cursor): head(head), tail(tail), cursor(cursor) {};
+		list(const int *array, int n);
+//		list(const list &list);
+		~list();
 		void prepend(int n);
 		void append(int n);
 		void add_at_cursor(int n);
@@ -24,13 +27,12 @@ class list {
 		list_element* get_tail() { return this->tail; }
 		list_element* get_cursor() { return this->cursor; }
 		void advance_cursor() { this->cursor = this->cursor->next; }
-		bool is_empty();
+		bool is_empty() const;
 		void print();
 };
 
 inline std::ostream& operator<<(std::ostream &out, list my_list) {
 	list_element *temp = my_list.get_head();
-//	assert (temp != NULL);
 	while ((temp != NULL) && (temp->next != NULL)) {
 		std::cout << temp->value << ", ";
 		temp = temp->next;
@@ -40,7 +42,47 @@ inline std::ostream& operator<<(std::ostream &out, list my_list) {
 	return out;
 }
 
-bool list::is_empty() {
+list::list(const int *array, int n) {
+	std::cout << "constructor 1\n";
+	assert((n!= 0) && (array != NULL));
+	list_element *temp = new list_element(array[0], NULL);
+	this->head = this->tail = this->cursor = temp;
+	for (int i = 1; i < n; i ++) {
+		temp = new list_element(array[i], NULL);
+		this->tail->next = temp;
+		this->tail = temp;
+//		this->append(array[i]);
+		std::cout << "constructor 1 in loop\n";
+	}
+}
+/*
+list::list(const list &list) {
+	std::cout << "constructor 2\n";
+	if (list.is_empty()) {
+		std::cout << "constructor 2 again\n";
+		this->head = NULL;
+		this->tail = NULL;
+		this->cursor = NULL;
+	} else {
+		list_element *temp = list.head;
+		while (temp != NULL) {
+			this->append(temp->value);
+			temp = temp->next;
+		}
+	}
+}
+*/
+list::~list() {
+	std::cout << "in destructor\n";
+	this->cursor = this->head;
+	while (this->cursor != NULL) {
+		this->cursor = this->cursor->next;
+		delete this->head;
+		this->head = this->cursor;
+	}
+}
+
+bool list::is_empty() const {
 	if (this->head == NULL) return true;
 	else return false;
 }
@@ -69,6 +111,7 @@ void list::prepend(int n) {
 void list::append(int n) {
 	list_element *temp = new list_element(n, NULL);
 	if (this->is_empty()) {
+		std::cout << "appending to empty list\n";
 		this->head = temp;
 		this->tail = this->head;
 		this->cursor = this->head;
@@ -91,23 +134,18 @@ void list::add_at_cursor(int n) {
 }
 
 int main(void) {
-	list my_list;
+	int a[4] = {1, 2, 3, 4};
+	list my_list(a, 4);
+//	my_list.append(3);
 	std::cout << my_list;
-	my_list.print();
-//	my_list.add_at_cursor(2);
-	my_list.append(3);
-	std::cout << my_list.get_cursor()->value << '\n';
-//	my_list.print();
+//	std::cout << my_list.get_cursor()->value << '\n';
 	my_list.prepend(5);
-//	my_list.print();
 //	my_list.add_at_cursor(1);
-	my_list.prepend(6);
-	std::cout << my_list;
-	my_list.advance_cursor();
-	std::cout << my_list.get_cursor() << '\n';
-//	my_list.print();
-	my_list.append(4);
-//	my_list.print();
-	std::cout << my_list;
+//	my_list.prepend(6);
+//	std::cout << my_list;
+//	my_list.advance_cursor();
+//	std::cout << my_list.get_cursor() << '\n';
+//	my_list.append(4);
+//	std::cout << my_list;
 	return 0;
 }
