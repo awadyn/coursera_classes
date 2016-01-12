@@ -18,7 +18,7 @@ class list {
 		list(): head(NULL), tail(NULL), cursor(NULL) {};
 		list(list_element *head, list_element *tail, list_element *cursor): head(head), tail(tail), cursor(cursor) {};
 		list(const int *array, int n);
-//		list(const list &list);
+		list(const list &list);
 		~list();
 		void prepend(int n);
 		void append(int n);
@@ -43,7 +43,6 @@ inline std::ostream& operator<<(std::ostream &out, list my_list) {
 }
 
 list::list(const int *array, int n) {
-	std::cout << "constructor 1\n";
 	assert((n!= 0) && (array != NULL));
 	list_element *temp = new list_element(array[0], NULL);
 	this->head = this->tail = this->cursor = temp;
@@ -51,29 +50,30 @@ list::list(const int *array, int n) {
 		temp = new list_element(array[i], NULL);
 		this->tail->next = temp;
 		this->tail = temp;
-//		this->append(array[i]);
-		std::cout << "constructor 1 in loop\n";
 	}
 }
-/*
-list::list(const list &list) {
-	std::cout << "constructor 2\n";
-	if (list.is_empty()) {
-		std::cout << "constructor 2 again\n";
-		this->head = NULL;
-		this->tail = NULL;
-		this->cursor = NULL;
+
+list::list(const list &my_list) {
+	std::cout << "copy constructor called..\n";
+	if (my_list.is_empty()) {
+		this->head = this->tail = this->cursor = NULL;
 	} else {
-		list_element *temp = list.head;
-		while (temp != NULL) {
-			this->append(temp->value);
-			temp = temp->next;
+		this->cursor = my_list.head;
+		list_element *temp = new list_element((my_list.head)->value, NULL);
+		this->head = this->tail = temp;
+		this->cursor = this->cursor->next;
+		while (this->cursor != NULL) {
+			temp = new list_element((this->cursor)->value, NULL);
+			this->tail->next = temp;
+			this->tail = temp;
+			this->cursor = this->cursor->next;
 		}
+		this->cursor = this->head;
 	}
 }
-*/
+
 list::~list() {
-	std::cout << "in destructor\n";
+	std::cout << "destructor called..\n";
 	this->cursor = this->head;
 	while (this->cursor != NULL) {
 		this->cursor = this->cursor->next;
@@ -136,16 +136,16 @@ void list::add_at_cursor(int n) {
 int main(void) {
 	int a[4] = {1, 2, 3, 4};
 	list my_list(a, 4);
-//	my_list.append(3);
+	my_list.append(3);
 	std::cout << my_list;
 //	std::cout << my_list.get_cursor()->value << '\n';
 	my_list.prepend(5);
 //	my_list.add_at_cursor(1);
-//	my_list.prepend(6);
-//	std::cout << my_list;
-//	my_list.advance_cursor();
+	my_list.prepend(6);
+	std::cout << my_list;
+	my_list.advance_cursor();
 //	std::cout << my_list.get_cursor() << '\n';
-//	my_list.append(4);
-//	std::cout << my_list;
+	my_list.append(4);
+	std::cout << my_list;
 	return 0;
 }
