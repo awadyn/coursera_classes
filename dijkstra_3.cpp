@@ -43,7 +43,26 @@ std::vector<std::vector<bool>> generate_graph(const int num_nodes) {
 }
 
 bool is_connected(std::vector<std::vector<bool>> &graph) {
-	
+	size_t size = graph.size();
+	std::vector<bool> closed(size, 0);
+	std::vector<bool> open(size, 0);
+	int old_closed_nodes = 0, closed_nodes = 0;
+	open[0] = true;
+	while (closed_nodes < size) {
+		old_closed_nodes = closed_nodes;
+		for (int i = 0; i < size; i ++) {
+			if ((open[i] == true) && (closed[i] == false)) {
+				closed[i] = true;
+				closed_nodes ++;
+				for (int j = 0; j < size; j ++) {
+					open[j] = open[j] || graph[i][j];
+				}
+			}
+		}
+		if (old_closed_nodes == closed_nodes) break;
+	}
+	if (closed_nodes == size) return true;
+	else if (old_closed_nodes == closed_nodes) return false;
 }
 
 int main(void) {
@@ -65,6 +84,10 @@ int main(void) {
 	std::cout << c[1][1] << '\n';
 */
 	std::cout << generate_graph(5);
+	std::cout << generate_graph(6).size() << '\n';
+	std::vector<std::vector<bool>> graph = generate_graph(5);
+	std::cout << graph;
+	std::cout << is_connected(graph) << '\n';
 /*
 	int nums[4] = {16, 17, 18, 19};
 	std::vector<int> b(nums, nums + (sizeof(nums)/sizeof(int)));
